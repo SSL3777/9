@@ -30,18 +30,6 @@ wget https://github.com/jgmdev/ddos-deflate/archive/master.zip;unzip master.zip;
 cd ddos-deflate-master && ./install.sh
 service exim4 stop;sysv-rc-conf exim4 off;
 
-#installing webmin
-wget http://www.webmin.com/jcameron-key.asc
-apt-key add jcameron-key.asc
-echo "deb http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
-echo "deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib" >> /etc/apt/sources.list
-apt-get update
-apt-get -y install webmin
-#disable webmin https
-sed -i "s/ssl=1/ssl=0/g" /etc/webmin/miniserv.conf
-/etc/init.d/webmin restart
-cd
-
 # openvpn
 apt-get -y install openvpn
 wget -O /etc/openvpn/openvpn.tar "https://raw.githubusercontent.com/ehomecore/deb-ubun/master/openvpn.tar"
@@ -228,6 +216,25 @@ iptables-restore < /etc/iptables.up.rules
 sed -i 's/\/var\/www\/html;/\/home\/vps\/public_html\/;/g' /etc/nginx/sites-enabled/default
 cp /var/www/html/index.nginx-debian.html /home/vps/public_html/index.html
 
+#Setting USW
+apt-get install ufw
+ufw allow ssh
+ufw allow 1194/tcp
+sed -i 's|DEFAULT_INPUT_POLICY="DROP"|DEFAULT_INPUT_POLICY="ACCEPT"|' /etc/default/ufw
+sed -i 's|DEFAULT_FORWARD_POLICY="DROP"|DEFAULT_FORWARD_POLICY="ACCEPT"|' /etc/default/ufw
+cat > /etc/ufw/before.rules <<-END
+# START OPENVPN RULES
+# NAT table rules
+*nat
+:POSTROUTING ACCEPT [0:0]
+# Allow traffic from OpenVPN client to eth0
+-A POSTROUTING -s 10.8.0.0/8 -o eth0 -j MASQUERADE
+COMMIT
+# END OPENVPN RULES
+END
+ufw enable
+ufw status
+ufw disable
 
 
 # Create and Configure rc.local
